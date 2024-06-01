@@ -39,7 +39,7 @@
                 </div>
             </form>
             <div class="text-sm text-center">
-                <a href="{{ route('register') }}" class="font-medium text-orange-800 hover:text-indigo-500">Don't have an account? Register</a>
+                <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Don't have an account? Register</a>
             </div>
         </div>
     </div>

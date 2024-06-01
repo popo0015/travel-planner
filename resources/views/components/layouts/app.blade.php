@@ -29,30 +29,41 @@
 <body class="relative flex flex-col items-center min-h-screen m-0 p-0 bg-cover"
       style="font-family: 'Roboto', sans-serif; background-image: url('{{ asset('/images/texture.jpg') }}'); background-size: cover;">
 <div class="overlay"></div>
-<nav class="relative w-full py-4 px-6 flex justify-between items-center z-10">
-    <div>
-        <a href="/" class="text-black text-3xl font-bold flex">
-            <img width="35" height="35" src="https://img.icons8.com/ios-filled/35/airport.png" alt="airplane"
-                 class="mr-5"/>
-            Travel Itinerary Planner
-        </a>
-    </div>
-    <div>
-        <a href="/" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Home</a>
-        <a href="{{ route('destinations.index') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Destinations</a>
-        @guest
-            <a href="{{ route('login') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Login</a>
-            <a href="{{ route('register') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Register</a>
-        @else
-            <a href="{{ route('dashboard') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Dashboard</a>
-            <form action="{{ route('logout') }}" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Logout</button>
-            </form>
-        @endguest
-        <a href="nonexistent" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">404 error</a>
-    </div>
-</nav>
+
+@unless (Route::is('login') || Route::is('register'))
+    <nav class="relative w-full py-4 px-6 flex justify-between items-center z-10">
+        <div>
+            <a href="/" class="text-black text-3xl font-bold flex">
+                <img width="35" height="35" src="https://img.icons8.com/ios-filled/35/airport.png" alt="airplane"
+                     class="mr-5"/>
+                Travel Itinerary Planner
+            </a>
+        </div>
+        <div class="flex items-center">
+            <a href="/" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Home</a>
+            <a href="{{ route('destinations.index') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Destinations</a>
+            @guest
+                <a href="{{ route('login') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Login</a>
+                <a href="{{ route('register') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Register</a>
+            @else
+                <div class="relative ml-4">
+                    <button id="userMenuButton" class="flex items-center text-[#DAC7A0] hover:text-[#FFCC00] focus:outline-none bg-white text-gray-800 rounded-full px-3 py-1">
+                        <span>{{ Auth::user()->name }}</span>
+                        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="userMenu" class="absolute right-0 w-48 mt-2 bg-white rounded-md shadow-lg hidden">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
+                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
+                    </div>
+                </div>
+            @endguest
+            <a href="nonexistent" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">404 error</a>
+        </div>
+    </nav>
+@endunless
+
 <div class="relative z-10 w-full flex flex-col items-center">
     {{ $slot }}
 
@@ -101,6 +112,16 @@
         function closeModal() {
             document.getElementById('deleteModal').classList.add('hidden');
         }
+
+        document.getElementById('userMenuButton').addEventListener('click', function() {
+            document.getElementById('userMenu').classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!document.getElementById('userMenuButton').contains(event.target)) {
+                document.getElementById('userMenu').classList.add('hidden');
+            }
+        });
     </script>
 </div>
 </body>
