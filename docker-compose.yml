@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: travel-planner-app
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/html
+        environment:
+            - APACHE_DOCUMENT_ROOT=/var/www/html/public
+            - DB_CONNECTION=mysql
+            - DB_HOST=travel-planner-database
+            - DB_PORT=3306
+            - DB_DATABASE=travel_planner
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+        depends_on:
+            - travel-planner-database
+        networks:
+            - travel-network
+
+    travel-planner-database:
+        image: mysql:8.0
+        container_name: travel-planner-database
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: travel_planner
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+        volumes:
+            - travel-planner-mysql-data:/var/lib/mysql
+        networks:
+            - travel-network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        ports:
+            - "8081:80"
+        environment:
+            PMA_HOST: travel-planner-database
+            MYSQL_ROOT_PASSWORD: root
+        depends_on:
+            - travel-planner-database
+        networks:
+            - travel-network
+
+networks:
+    travel-network:
+        driver: bridge
+
+volumes:
+    travel-planner-mysql-data:
