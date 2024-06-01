@@ -40,8 +40,17 @@
     <div>
         <a href="/" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Home</a>
         <a href="{{ route('destinations.index') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Destinations</a>
+        @guest
+            <a href="{{ route('login') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Login</a>
+            <a href="{{ route('register') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Register</a>
+        @else
+            <a href="{{ route('dashboard') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Dashboard</a>
+            <form action="{{ route('logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Logout</button>
+            </form>
+        @endguest
         <a href="nonexistent" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">404 error</a>
-        <a href="{{ route('500.error') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">500 error</a>
     </div>
 </nav>
 <div class="relative z-10 w-full flex flex-col items-center">

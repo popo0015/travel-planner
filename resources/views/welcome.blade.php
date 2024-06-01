@@ -1,6 +1,6 @@
 <x-layouts.app>
     <div class="breadcrumb w-11/12 max-w-5xl mt-10">
-        <a href="/" class="text-white hover:underline">Home</a>
+        <a href="/" class="text-white hover:underline">Dashboard</a>
     </div>
     <div class="ticket-container flex flex-col items-center w-11/12 max-w-5xl mt-5 bg-transparent shadow-lg">
         <div class="ticket flex flex-col md:flex-row w-full">

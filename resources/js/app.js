@@ -1,11 +1,7 @@
 import './bootstrap';
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-geosearch/dist/geosearch.css';
+import Alpine from 'alpinejs';
 
-import L from 'leaflet';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+window.Alpine = Alpine;
 
-window.L = L;
-window.GeoSearchControl = GeoSearchControl;
-window.OpenStreetMapProvider = OpenStreetMapProvider;
+Alpine.start();
