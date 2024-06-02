@@ -1,19 +1,10 @@
 #!/bin/bash
 
-# Set permissions and create necessary directories and files
+# Set permissions
 cd /var/www/html
-
-if [ ! -d "storage/logs" ]; then
-    mkdir -p storage/logs
-fi
-
-if [ ! -f "storage/logs/laravel.log" ]; then
-    touch storage/logs/laravel.log
-fi
-
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
-chmod -R 777 storage/logs/laravel.log
+chmod -R 777 /var/www/html/storage/logs/laravel.log
 
 # Run Laravel migrations
 php artisan migrate --force
