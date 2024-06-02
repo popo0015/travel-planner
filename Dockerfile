@@ -20,7 +20,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 WORKDIR /var/www/html
 
 # Copy existing application directory contents to the working directory
-COPY src/ /var/www/html
+COPY . /var/www/html
 
 # Expose port 80 for Apache
 EXPOSE 80

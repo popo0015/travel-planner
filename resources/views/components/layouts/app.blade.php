@@ -14,17 +14,22 @@
             background-color: rgba(86, 77, 54, 0.8);
             pointer-events: none;
         }
+
         #mapContainer {
             height: calc(100% - 40px);
             width: 100%;
         }
+
         .hidden {
             display: none;
         }
     </style>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch/dist/bundle.min.js"></script>
+
 </head>
 <body class="relative flex flex-col items-center min-h-screen m-0 p-0 bg-cover"
       style="font-family: 'Roboto', sans-serif; background-image: url('{{ asset('/images/texture.jpg') }}'); background-size: cover;">
@@ -40,26 +45,38 @@
             </a>
         </div>
         <div class="flex items-center">
-            <a href="/" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Home</a>
-            <a href="{{ route('destinations.index') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Destinations</a>
             @guest
                 <a href="{{ route('login') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Login</a>
                 <a href="{{ route('register') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Register</a>
             @else
+                <a href="/" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Home</a>
+                <a href="{{ route('destinations.index') }}" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">Destinations</a>
                 <div class="relative ml-4">
-                    <button id="userMenuButton" class="flex items-center text-[#DAC7A0] hover:text-[#FFCC00] focus:outline-none bg-white text-gray-800 rounded-full px-3 py-1">
-                        <span>{{ Auth::user()->name }}</span>
-                        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div id="userMenu" class="absolute right-0 w-48 mt-2 bg-white rounded-md shadow-lg hidden">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
-                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
-                    </div>
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button
+                                class="flex items-center text-[#DAC7A0] hover:text-[#FFCC00] focus:outline-none bg-white text-gray-800 rounded-full px-3 py-1">
+                                <span>{{ Auth::user()->name }}</span>
+                                <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('logout')">
+                                {{ __('Logout') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
                 </div>
+                <a href="nonexistent" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">404 error</a>
             @endguest
-            <a href="nonexistent" class="text-[#DAC7A0] hover:text-[#FFCC00] px-4">404 error</a>
         </div>
     </nav>
 @endunless
@@ -104,22 +121,39 @@
     @endif
 
     <script>
-        function openModal(action) {
-            document.getElementById('deleteForm').action = action;
-            document.getElementById('deleteModal').classList.remove('hidden');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            function openModal(action) {
+                document.getElementById('deleteForm').action = action;
+                document.getElementById('deleteModal').classList.remove('hidden');
+            }
 
-        function closeModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-        }
+            function closeModal() {
+                document.getElementById('deleteModal').classList.add('hidden');
+            }
 
-        document.getElementById('userMenuButton').addEventListener('click', function() {
-            document.getElementById('userMenu').classList.toggle('hidden');
-        });
+            document.getElementById('userMenuButton').addEventListener('click', function() {
+                document.getElementById('userMenu').classList.toggle('hidden');
+            });
 
-        document.addEventListener('click', function(event) {
-            if (!document.getElementById('userMenuButton').contains(event.target)) {
-                document.getElementById('userMenu').classList.add('hidden');
+            document.addEventListener('click', function(event) {
+                if (!document.getElementById('userMenuButton').contains(event.target)) {
+                    document.getElementById('userMenu').classList.add('hidden');
+                }
+            });
+
+            // Initialize Leaflet map if necessary
+            if (typeof L !== 'undefined') {
+                function initializeMap() {
+                    var map = L.map('mapContainer').setView([51.505, -0.09], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                    }).addTo(map);
+                }
+
+                if (document.getElementById('mapContainer')) {
+                    initializeMap();
+                }
             }
         });
     </script>
