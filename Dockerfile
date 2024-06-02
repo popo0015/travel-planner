@@ -22,6 +22,9 @@ WORKDIR /var/www/html
 # Copy existing application directory contents to the working directory
 COPY . /var/www/html
 
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
 # Expose port 80 for Apache
 EXPOSE 80
 
